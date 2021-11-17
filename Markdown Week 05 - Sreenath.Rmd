@@ -1,0 +1,56 @@
+---
+title: "ANA 515 Week 05 Visualization"
+author: Sreenath Umagandhi
+date: 11-17-2021
+output: 
+  html_document:
+    theme:
+      bootswatch: slate
+---
+
+```{r setup, include = FALSE}
+
+library(ggplot2)
+library(tidyverse)
+library(lubridate)
+```
+
+
+```{r, include = TRUE}
+
+url <- "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KSEA.csv"
+seattle_weather <- read.csv(url)
+# I am using read.csv() function to read the data into an object
+```
+
+```{r, include = TRUE}
+#subset only temperature
+seattle_temp <- subset(seattle_weather, select = -c(record_min_temp_year,record_max_temp_year,actual_precipitation,
+                                                    average_precipitation,record_precipitation))
+#lubridate package to convert to date field
+seattle_temp$date <- ymd(seattle_temp$date)
+
+#plot temperature plot to prepare for the hottest and coldest days for the following year following the pattern of this year
+ggplot(data = seattle_temp, aes(x = date, y = actual_max_temp)) +
+  geom_point() +
+  labs(x = "Date",
+    y = "Temperature (F)",
+    title = "Weather Data of Seattle",
+    subtitle = "Max Temp Over Months")
+```
+
+
+```{r, include = TRUE}
+#subset only precipitation from the data set
+seattle_precip <- subset(seattle_weather, select = c(date, actual_precipitation,
+                                                    average_precipitation,record_precipitation))
+#lubridate package to convert to date field
+seattle_precip$date <- ymd(seattle_precip$date)
+
+#plot precipitation to find out the pattern of rainfall for the following year using the present year.
+ggplot(data = seattle_precip, aes(x = date, y = actual_precipitation)) +
+      geom_bar(stat = "identity", fill = "blue") +
+      labs(title = "Average Precipitation in Seattle",
+           subtitle = "2014-15",
+           x = "Date", y = "Precipitation")
+```
